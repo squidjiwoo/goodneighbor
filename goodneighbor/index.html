@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Product List</title>
+</head>
+<body>
+    <table id="product-table">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Price</th>
+        </tr>
+    </table>
+
+    <div id="pagination"></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function() {
+            var page = 0; // 현재 페이지 번호
+            var size = 10; // 한 페이지에 보여줄 상품의 수
+            var totalPages = 0; // 전체 페이지 수
+
+            function renderTable(products) {
+                // 상품 목록을 HTML 테이블로 변환하여 #product-table 요소에 추가
+                var table = $('#product-table');
+                table.find('tr:gt(0)').remove();
+                // 기존 상품 목록 제거
+                $.each(products, function(index, product) {
+                    var row = '<tr><td>' + product.id + '</td><td>' + product.name + '</td><td>' + product.price + '</td></tr>';
+                    table.append(row);
+                });
+            }
+
+            function renderPagination() {
+                // 페이지 번호를 생성하여 #pagination 요소에 추가
+                var pagination = $('#pagination');
+                pagination.empty(); // 기존 페이지 번호 제거
+                for (var i = 1; i <= totalPages; i++) {
+                    var link = '<a href="#" class="page-link">' + i + '</a>';
+                    if (i === page + 1) {
+                      link = '<span class="page-link">' + i + '</span>';
+                    }
+                    pagination.append(link);
+                }
+            }
+
+            function loadPage() {
+                // 서버에서 상품 데이터를 가져와서 HTML에 표시
+                $.get('/api/products?page=' + page + '&size=' + size)
+                    .done(function(data) {
+                        totalPages = data.totalPages;
+                        renderTable(data.content);
+                        renderPagination();
+                    })
+                    .fail(function() {
+                        console.error('Failed to load products');
+                    });
+            }
+
+            $(document).on('click', '.page-link', function(e) {
+                // 페이지 번호를 클릭하면 해당 페이지로 이동
+                e.preventDefault();
+                page = parseInt($(this).text()) - 1;
+                loadPage();
+            });
+
+            loadPage(); // 초기 페이지 로드
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+ <!-- table -->
+    <table>
+      <c:if test="${pageTest.pageCnt > 1}">
+        <!-- c:if -->
+        <c:if test="${endPage > pageCount}">
+          <c:set var="endPage" value="${pageCount}"/>
+        </c:if>
+        <!-- c:if -->
+        <c:if test="${startPage > 5}">
+          <button class="btn btn-success" onclick="window.location.href='${ctxpath}/board/list.do?pageNum=${startPage - 5}'"> <i class="fa fa-angle-left" aria-hidden="true"> </i> </button>
+        </c:if>
+        <!-- c:forEach -->
+        <c:forEach var="i" begin="${startPage}" end="${endPage}">
+          <button class="btn btn-success" onclick="window.location.href='${ctxpath}/board/list.do?pageNum=${i}'"> &nbsp; ${i} &nbsp; </button>
+        </c:forEach>
+        <!-- c:if -->
+        <c:if test="${endPage < pageCount}">
+          <button class="btn btn-success" onclick="window.location.href='${ctxpath}/board/list.do?pageNum=${startPage + 5}'"> <i class="fa fa-angle-right" aria-hidden="true"> </i> </button>
+        </c:if>
+      </c:if>
+    </table>
+    <!-- /table -->
